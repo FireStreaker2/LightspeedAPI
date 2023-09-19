@@ -1,2 +1,2 @@
 # LightspeedAPI
- Unofficial API for lightspeed using python.
+ Unofficial API for lightspeed using puppeteer.
