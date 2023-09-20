@@ -4,15 +4,20 @@ const puppeteer = require("puppeteer");
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 
-	await page.goto("https://firestreaker2.gq");
+	await page.goto("https://archive.lightspeedsystems.com");
 
-	const data = await page.evaluate(() => {
-		const element = document.getElementById("pfp");
+	await page.type("#CeleritasInput0", "firestreaker2.gq");
+	await page.click(".CeleritasButton");
 
-    return element ? element.innerHTML : null;
+	const tableSelector = ".table_double";
+	await page.waitForSelector(tableSelector);
+
+	const result = await page.evaluate(() => {
+		const element = document.querySelector(".table_double");
+		return element.innerHTML;
 	});
 
-	await browser.close();
+  result ? console.log(result) : console.log("n/a");
 
-	console.log(data ? data : "n/a");
+	await browser.close();
 })();
