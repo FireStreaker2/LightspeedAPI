@@ -1,23 +1,44 @@
 const puppeteer = require("puppeteer");
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 3000;
 
-(async () => {
-	const browser = await puppeteer.launch();
-	const page = await browser.newPage();
+app.get("/", (req, res) => {
+	res.send("Hello, World!");
+});
 
-	await page.goto("https://archive.lightspeedsystems.com");
+app.get("/search/:domain", (req, res) => {
+	const domain = req.params.domain;
 
-	await page.type("#CeleritasInput0", "firestreaker2.gq");
-	await page.click(".CeleritasButton");
+	if (domain.includes(".") === false) {
+		res.status(500).json({ response: 500 });
+		return;
+	}
 
-	const tableSelector = ".table_double";
-	await page.waitForSelector(tableSelector);
+	(async () => {
+		const browser = await puppeteer.launch();
+		const page = await browser.newPage();
 
-	const result = await page.evaluate(() => {
-		const element = document.querySelector(".table_double");
-		return element.innerHTML;
-	});
+		await page.goto("https://archive.lightspeedsystems.com");
 
-  result ? console.log(result) : console.log("n/a");
+		await page.type("#CeleritasInput0", domain);
+		await page.click(".CeleritasButton");
 
-	await browser.close();
-})();
+		const tableSelector = ".table_double";
+		await page.waitForSelector(tableSelector);
+
+		const result = await page.evaluate(() => {
+			const element = document.querySelector(".table_double");
+			return element.innerHTML;
+		});
+
+		result ? res.json({ "response": result }) : res.status(500).json({ "response": "n/a "});
+
+		await browser.close();
+	})();
+	
+});
+
+app.listen(port, () => {
+	console.log(`App is running at http://localhost:${port}`);
+});
