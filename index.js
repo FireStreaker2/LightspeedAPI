@@ -4,7 +4,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-	res.send("Hello, World!");
+	res.send(
+		`<script>window.location.href = "https://github.com/FireStreaker2/LightspeedAPI";</script>`
+	);
 });
 
 app.get("/search/:domain", (req, res) => {
@@ -29,14 +31,58 @@ app.get("/search/:domain", (req, res) => {
 
 		const result = await page.evaluate(() => {
 			const element = document.querySelector(".table_double");
-			return element.innerHTML;
+			let data = element.innerHTML;
+			const results = [];
+			const elements = [
+				"<table>",
+				"<thead>",
+				"<td>",
+				"<th>",
+				"<tr>",
+				"<tbody>",
+				"<span>",
+				"<table>",
+				"<div>",
+				"</table>",
+				"</thead>",
+				"</td>",
+				"</th>",
+				"</tr>",
+				"</tbody>",
+				"</span>",
+				"</table>",
+				"</div>",
+			];
+
+			for (let i = 1; i <= elements.length; i++) {
+				const element = elements[i];
+				data = data.replaceAll(element, "");
+			}
+
+			results.push(data.match(/<\/p>(.*?)<span c/)[1]);
+			results.push(data.match(/Date\/Time(.*?)<span c/)[1]);
+			results.push(data.match(/Categorization Reason(.*?)\./)[1]);
+
+			data = data.substring(data.indexOf("Lightspeed Rocket"));
+
+			results.push(data.match(/<\/p>(.*?)<span c/)[1]);
+			results.push(data.match(/Date\/Time(.*?)<span c/)[1]);
+			results.push(data.match(/Categorization Reason(.*?)\./)[1]);
+
+			res.json({ error: error });
+
+			return results;
 		});
 
-		result ? res.json({ "response": result }) : res.status(500).json({ "response": "n/a "});
+		result
+			? res.json({
+					filter: { category: result[0], date: result[1], member: result[2] },
+					rocket: { category: result[3], date: result[4], member: result[5] },
+			  })
+			: res.status(500).json({ error: 500 });
 
 		await browser.close();
 	})();
-	
 });
 
 app.listen(port, () => {
