@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/FireStreaker2/LightspeedAPI#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "puppeteer": "^21.2.1"
   }

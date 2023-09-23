@@ -63,7 +63,7 @@ Response:
 		"member": "Automatically categorized by Lightspeed Systems"
 	},
 	"rocket": {
-		"category": "computers",
+		"category": "entertainment",
 		"date": "Jul 3 2023 08:12:42 PM CST",
 		"member": "Automatically categorized by Lightspeed Systems"
 	}
