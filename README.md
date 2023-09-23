@@ -70,6 +70,14 @@ Response:
 }
 ```
 
+# Selfhosting
+If you would like to selfhost this project, you may.
+```bash
+$ git clone https://github.com/FireStreaker2/LightspeedAPI.git
+$ cd LightspeedAPI
+$ npm i
+$ npm start
+```
 
 
 # License
